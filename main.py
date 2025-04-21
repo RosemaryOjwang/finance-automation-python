@@ -10,7 +10,18 @@ st.set_page_config(page_title="Simple Finance App", layout="wide")
 #File upload
 
 def load_transactions(file):
-    pass
+    try:
+        df = pd.read_csv(file)
+        df.columns = [col.strip() for col in df.columns]
+        df["Amount"] = df["Amount"].str.replace(",", "").astype(float)
+        df["Date"] = pd.to_datetime(df["Date"], format="%d %b %Y")
+        st.write(df)
+        return df
+    except Exception as e:
+        st.error(f"Error processing file: {str(e)}")
+        return None
+
+
 def main():
     st.title("Simple Finance Dashboard")
     uploaded_file = st.file_uploader("Upload your transaction CSV file", type=["csv"])
