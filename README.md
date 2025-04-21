@@ -20,3 +20,8 @@ The app allows you to upload your own financial transaction data (e.g. from your
 
 ---
 ## Work in Progress
+
+---
+This is a practice project by Rose, part of my learning journey in Data Analytics and Python-based dashboarding. Feel free to fork or contribute!
+
+---
