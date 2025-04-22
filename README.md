@@ -4,7 +4,7 @@ This project is inspired by the YouTube tutorial [How To Automate Your Finances 
 The app allows you to upload your own financial transaction data (e.g. from your bank or budgeting app) and get instant insights on your income, expenses, cash flow, and spending habits — all in an interactive dashboard.
 
 ---
-## 🚀 Features
+## Features
 
 - Upload a CSV file of your transactions
 - Clean and preprocess data with Pandas
@@ -12,7 +12,7 @@ The app allows you to upload your own financial transaction data (e.g. from your
 
 
 ---
-## 🛠️ Tech Stack
+## Tech Stack
 
 - Python 3
 - Pandas
