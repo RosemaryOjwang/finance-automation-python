@@ -132,7 +132,16 @@ def main():
                     category_totals,
                     values="Amount",
                     names="Category",
-                    title="Expenses by Category"
+                    title="Expenses by Category",
+                    color='Category',
+                    color_discrete_map={
+                        'Travel': '#4E79A7',
+                        'Shopping': '#76B7B2',
+                        'Insurance': '#E15759',
+                        'Subscription': '#F28E2B' ,
+                        'Transaction fees': '#59A14F' 
+                        }
+
                 )
 
                 #Display the pie chart
