@@ -12,6 +12,9 @@ The app allows you to upload your own financial transaction data (e.g. from your
 - Visualize income and expenses with Plotly charts
 
 ---
+
+## Demo
+![Demo](demo.mp4)
 ## Tech Stack
 
 - Python 3
