@@ -9,7 +9,7 @@ The app allows you to upload your own financial transaction data (e.g. from your
 - Upload a CSV file of your transactions
 - Clean and preprocess data with Pandas
 - Categorize and filter transactions
-
+- Visualize income and expenses with Plotly charts
 
 ---
 ## Tech Stack
@@ -18,7 +18,6 @@ The app allows you to upload your own financial transaction data (e.g. from your
 - Pandas
 - Streamlit
 - Plotly
-- NumPy
 
 ---
 ## Work in Progress
