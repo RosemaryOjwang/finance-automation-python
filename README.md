@@ -14,7 +14,7 @@ The app allows you to upload your own financial transaction data (e.g. from your
 ---
 
 ## Demo
-![Demo](demo.mp4)
+![Demo](demo.gif)
 ## Tech Stack
 
 - Python 3
