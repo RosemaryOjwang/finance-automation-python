@@ -112,6 +112,22 @@ def main():
                         st.session_state.debits_df.at[idx, "Category"] = new_category
                         add_keyword_to_category(new_category, details)
 
+                #Show summary of categories
+                st.subheader('Expense Summary')
+                category_totals = st.session_state.debits_df.groupby("Category")["Amount"].sum().reset_index()
+                category_totals = category_totals.sort_values("Amount", ascending=False)
+
+                #Display as a different dataframe
+                st.dataframe(
+                    category_totals,
+                    column_config={
+                        "Amount": st.column_config.NumberColumn("Amount", format="%.2f KES")
+                    },
+                    use_container_width=True,
+                    hide_index=True
+                )
+
+
             with tab2:
                 st.write(credits_df)
 
