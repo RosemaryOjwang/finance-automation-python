@@ -127,6 +127,17 @@ def main():
                     hide_index=True
                 )
 
+                #Create a pie chart for the different categories
+                fig = px.pie(
+                    category_totals,
+                    values="Amount",
+                    names="Category",
+                    title="Expenses by Category"
+                )
+
+                #Display the pie chart
+                st.plotly_chart(fig, use_container_width=True ) 
+
 
             with tab2:
                 st.write(credits_df)
