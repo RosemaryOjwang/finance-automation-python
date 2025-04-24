@@ -129,6 +129,16 @@ def main():
                 category_totals = st.session_state.debits_df.groupby("Category")["Amount"].sum().reset_index()
                 category_totals = category_totals.sort_values("Amount", ascending=False)
 
+                #Calculate totals for pie chart
+                total_expenses = category_totals["Amount"].sum()
+                total_payments = credits_df["Amount"].sum()
+                remaining_balance = total_payments - total_expenses
+
+                pie_data = pd.DataFrame({
+                    "Category": ["Total Expenses", "Remaining Balance"],
+                    "Amount": [total_expenses, remaining_balance]
+                })
+
                 #Display as a different dataframe
                 st.dataframe(
                     category_totals,
@@ -140,33 +150,54 @@ def main():
                 )
 
                 #Create a bar chart for the different categories
-                
-
                 fig = px.bar(
                     category_totals,
-                    x="Amount",
-                    y="Category",
+                    y="Amount",
+                    x="Category",
                     title="Expenses by Category",
                     text="Amount"
                 )
 
                 fig.update_traces(
                     texttemplate='%{text}',
-                    textposition='outside'
+                    textposition='outside',
+                    textfont_size=10,
+                    marker_color='#FFDB58'
                 )
 
                 fig.update_layout(
                     uniformtext_minsize=8,
                     uniformtext_mode='hide',
-                    yaxis_title='Category',
-                    xaxis_title='Amount (KES)',
+                    xaxis_title='Category',
+                    yaxis_title='Amount (KES)',
                     plot_bgcolor='rgba(0,0,0,0)',
+                    margin=dict( r=80),
+                    width=900,
                     showlegend=False
                 )
 
+                #Create pie chart for payments vs expenses
+                color_map = {
+                    'Total Expenses': '#FFDB58',
+                    'Remaining Balance': '#000080'
+                }
+                pie_fig = px.pie(
+                    pie_data,
+                    names="Category",
+                    values="Amount",
+                    title="Total Payments Allocation: Expenses vs. Remaining Balance",
+                    color="Category",
+                    color_discrete_map=color_map
+                )
+                pie_fig.update_layout(margin=dict(t=70, b=40, l=40, r=0))
+            
 
-                #Display the pie chart
-                st.plotly_chart(fig, use_container_width=True )
+                #Display the charts side by side
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.plotly_chart(fig, use_container_width=True )
+                with col2:
+                    st.plotly_chart(pie_fig, use_container_width=True)
 
 
 
