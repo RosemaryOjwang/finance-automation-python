@@ -187,6 +187,7 @@ def main():
                     values="Amount",
                     title="Total Payments Allocation: Expenses vs. Remaining Balance",
                     color="Category",
+                    hole=0.5,
                     color_discrete_map=color_map
                 )
                 pie_fig.update_layout(margin=dict(t=70, b=40, l=40, r=0))
@@ -199,6 +200,29 @@ def main():
                 with col2:
                     st.plotly_chart(pie_fig, use_container_width=True)
 
+                # Prepare daily expenses data
+                daily_expenses = st.session_state.debits_df.groupby("Date")["Amount"].sum().reset_index()
+
+                #Create the line chart
+                line_fig = px.line(
+                    daily_expenses,
+                    x="Date",
+                    y="Amount",
+                    title="Daily Expenses Over Time",
+                    markers=True,                    
+                    line_shape="linear"
+                )
+
+                line_fig.update_traces(line_color="#FFDB58")
+                line_fig.update_layout(
+                    xaxis_title="Date",
+                    yaxis_title="Amount (KES)",
+                    plot_bgcolor='rgba(0,0,0,0)'
+                    #marging=dict(t=50, b=40, l=40, r=40)
+                )
+
+                #Display the line chart
+                st.plotly_chart(line_fig, use_container_width=True)
 
 
 main()
