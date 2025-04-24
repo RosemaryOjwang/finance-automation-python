@@ -73,8 +73,9 @@ def main():
             credits_df = df[df["Debit/Credit"] == "Credit"].copy()
 
             st.session_state.debits_df = debits_df.copy()
-#Create Expenses (Debits) and Payments (Credits) tabs
-            tab1, tab2 = st.tabs(["Expenses (Debits)", "Payments (Credits)"])
+
+#Create Expenses (Debits), Payments (Credits)  and Visualization tabs
+            tab1, tab2, tab3 = st.tabs(["Expenses (Debits)", "Payments (Credits)", "Visualizations"])
             with tab1:
                 new_category = st.text_input("New Category Name")
                 add_button = st.button("Add Category")
@@ -112,6 +113,17 @@ def main():
                         st.session_state.debits_df.at[idx, "Category"] = new_category
                         add_keyword_to_category(new_category, details)
 
+                 
+
+
+            with tab2:
+                st.subheader("Payments Summary")
+                total_payments = credits_df["Amount"].sum()
+                st.metric("Total Payments", f"{total_payments:,.2f} KES")
+                st.write(credits_df)
+
+            with tab3:
+                st.subheader("Financial Visualizations")
                 #Show summary of categories
                 st.subheader('Expense Summary')
                 category_totals = st.session_state.debits_df.groupby("Category")["Amount"].sum().reset_index()
@@ -127,32 +139,35 @@ def main():
                     hide_index=True
                 )
 
-                #Create a pie chart for the different categories
-                fig = px.pie(
-                    category_totals,
-                    values="Amount",
-                    names="Category",
-                    title="Expenses by Category",
-                    color='Category',
-                    color_discrete_map={
-                        'Travel': '#4E79A7',
-                        'Shopping': '#76B7B2',
-                        'Insurance': '#E15759',
-                        'Subscription': '#F28E2B' ,
-                        'Transaction fees': '#59A14F' 
-                        }
+                #Create a bar chart for the different categories
+                
 
+                fig = px.bar(
+                    category_totals,
+                    x="Amount",
+                    y="Category",
+                    title="Expenses by Category",
+                    text="Amount"
                 )
 
+                fig.update_traces(
+                    texttemplate='%{text}',
+                    textposition='outside'
+                )
+
+                fig.update_layout(
+                    uniformtext_minsize=8,
+                    uniformtext_mode='hide',
+                    yaxis_title='Category',
+                    xaxis_title='Amount (KES)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    showlegend=False
+                )
+
+
                 #Display the pie chart
-                st.plotly_chart(fig, use_container_width=True ) 
+                st.plotly_chart(fig, use_container_width=True )
 
-
-            with tab2:
-                st.subheader("Payments Summary")
-                total_payments = credits_df["Amount"].sum()
-                st.metric("Total Payments", f"{total_payments:,.2f} KES")
-                st.write(credits_df)
 
 
 main()
