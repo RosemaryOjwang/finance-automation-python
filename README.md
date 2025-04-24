@@ -19,11 +19,6 @@ This project is inspired by the YouTube tutorial [How To Automate Your Finances 
   - Line chart (Daily Expenses over Time)
 - **Keyword Learning** — The app “learns” which keywords belong to which categories over time
 
----
-
-## Demo
-![Demo](demo.gif)
-
 
 ---
 
@@ -36,6 +31,44 @@ This project is inspired by the YouTube tutorial [How To Automate Your Finances 
 - Plotly
 
 ---
+
+## How to Run the App
+
+1. Clone the Repository
+```
+git clone https://github.com/RosemaryOjwang/finance-automation-python.git
+```
+2. Navigate to the directory 'finance-automation-python' using the command:
+```
+cd finance-automation-python
+```
+3. Create a virtual environment using the command python -m venv env
+
+4. Activate the virtual environment using:  
+
+  - for windows use env\Scripts\activate
+  - for Linux and MacOS use source env/bin/activate. The same applies for Gitbash.
+5. Run requirements file to install libraries using the following:
+```
+pip install -r requirements.txt
+```
+6. Run the App
+```
+streamlit run main.py
+```
+7. Open in Browser
+Streamlit will automatically open your default browser. If not, visit:
+
+http://localhost:8501
+
+---
+
+## Demo
+![Demo](demo.gif)
+
+
+---
+
 ## Work in Progress
 
 This app is constantly being refined! Upcoming improvements may include:
