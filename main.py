@@ -76,6 +76,8 @@ def main():
 
 #Create Expenses (Debits), Payments (Credits)  and Visualization tabs
             tab1, tab2, tab3 = st.tabs(["Expenses (Debits)", "Payments (Credits)", "Visualizations"])
+            
+            #Expenses Tab
             with tab1:
                 new_category = st.text_input("New Category Name")
                 add_button = st.button("Add Category")
@@ -111,25 +113,23 @@ def main():
 
                         details = row["Details"]
                         st.session_state.debits_df.at[idx, "Category"] = new_category
-                        add_keyword_to_category(new_category, details)
+                        add_keyword_to_category(new_category, details)                 
 
-                 
-
-
+            #Payments Tab
             with tab2:
                 st.subheader("Payments Summary")
                 total_payments = credits_df["Amount"].sum()
                 st.metric("Total Payments", f"{total_payments:,.2f} KES")
                 st.write(credits_df)
 
+
+            #Visualizations Tab
             with tab3:
                 st.subheader("Financial Visualizations")
-                #Show summary of categories
-                st.subheader('Expense Summary')
                 category_totals = st.session_state.debits_df.groupby("Category")["Amount"].sum().reset_index()
                 category_totals = category_totals.sort_values("Amount", ascending=False)
 
-                #Calculate totals for pie chart
+                #Calculate totals for bar chart
                 total_expenses = category_totals["Amount"].sum()
                 total_payments = credits_df["Amount"].sum()
                 remaining_balance = total_payments - total_expenses
@@ -137,92 +137,105 @@ def main():
                 pie_data = pd.DataFrame({
                     "Category": ["Total Expenses", "Remaining Balance"],
                     "Amount": [total_expenses, remaining_balance]
-                })
+                        })
 
-                #Display as a different dataframe
-                st.dataframe(
-                    category_totals,
-                    column_config={
-                        "Amount": st.column_config.NumberColumn("Amount", format="%.2f KES")
-                    },
-                    use_container_width=True,
-                    hide_index=True
-                )
+                #Row 1: summary + Pie
+                row1_col1, row1_col2 = st.columns(2)
+                with row1_col1:
+                    st.subheader('Expense Summary')
+                    
+                    #Display expense summary
+                    st.dataframe(
+                        category_totals,
+                        column_config={
+                            "Amount": st.column_config.NumberColumn("Amount", format="%.2f KES")
+                        },
+                        use_container_width=True,
+                        hide_index=True
+                    )
 
-                #Create a bar chart for the different categories
-                fig = px.bar(
-                    category_totals,
-                    y="Amount",
-                    x="Category",
-                    title="Expenses by Category",
-                    text="Amount"
-                )
 
-                fig.update_traces(
-                    texttemplate='%{text}',
-                    textposition='outside',
-                    textfont_size=10,
-                    marker_color='#FFDB58'
-                )
+                with row1_col2:
+                    
+                    
+                    #Create pie chart for payments vs expenses
+                    color_map = {
+                        'Total Expenses': '#FFDB58',
+                        'Remaining Balance': '#000080'
+                    }
+                    pie_fig = px.pie(
+                        pie_data,
+                        names="Category",
+                        values="Amount",
+                        title="Total Payments Allocation: Expenses vs. Remaining Balance",
+                        color="Category",
+                        hole=0.5,
+                        color_discrete_map=color_map
+                    )
+                    pie_fig.update_layout(
+                        height=380,
+                        margin=dict(t=70, b=40, l=40, r=0)
+                        )
 
-                fig.update_layout(
-                    uniformtext_minsize=8,
-                    uniformtext_mode='hide',
-                    xaxis_title='Category',
-                    yaxis_title='Amount (KES)',
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    margin=dict( r=80),
-                    width=900,
-                    showlegend=False
-                )
 
-                #Create pie chart for payments vs expenses
-                color_map = {
-                    'Total Expenses': '#FFDB58',
-                    'Remaining Balance': '#000080'
-                }
-                pie_fig = px.pie(
-                    pie_data,
-                    names="Category",
-                    values="Amount",
-                    title="Total Payments Allocation: Expenses vs. Remaining Balance",
-                    color="Category",
-                    hole=0.5,
-                    color_discrete_map=color_map
-                )
-                pie_fig.update_layout(margin=dict(t=70, b=40, l=40, r=0))
-            
-
-                #Display the charts side by side
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.plotly_chart(fig, use_container_width=True )
-                with col2:
+                    #Display pie chart
                     st.plotly_chart(pie_fig, use_container_width=True)
+                
+                row2_col1, row2_col2 = st.columns(2)
+                with row2_col1:
+                    #Create a bar chart for the different categories
+                    fig = px.bar(
+                        category_totals,
+                        y="Amount",
+                        x="Category",
+                        title="Expenses by Category",
+                        text="Amount"
+                    )
 
-                # Prepare daily expenses data
-                daily_expenses = st.session_state.debits_df.groupby("Date")["Amount"].sum().reset_index()
+                    fig.update_traces(
+                        texttemplate='%{text}',
+                        textposition='outside',
+                        textfont_size=11,
+                        marker_color='#FFDB58'
+                    )
 
-                #Create the line chart
-                line_fig = px.line(
-                    daily_expenses,
-                    x="Date",
-                    y="Amount",
-                    title="Daily Expenses Over Time",
-                    markers=True,                    
-                    line_shape="linear"
-                )
+                    fig.update_layout(
+                        uniformtext_minsize=8,
+                        #uniformtext_mode='hide',
+                        xaxis_title='Category',
+                        yaxis_title='Amount (KES)',
+                        plot_bgcolor='rgba(0,0,0,0)',
+                        height=380,
+                        showlegend=False
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
 
-                line_fig.update_traces(line_color="#FFDB58")
-                line_fig.update_layout(
-                    xaxis_title="Date",
-                    yaxis_title="Amount (KES)",
-                    plot_bgcolor='rgba(0,0,0,0)'
-                    #marging=dict(t=50, b=40, l=40, r=40)
-                )
+                with row2_col2:
+                    # Prepare daily expenses data
+                    daily_expenses = st.session_state.debits_df.groupby("Date")["Amount"].sum().reset_index()
 
-                #Display the line chart
-                st.plotly_chart(line_fig, use_container_width=True)
+                    #Create the line chart
+                    line_fig = px.line(
+                        daily_expenses,
+                        x="Date",
+                        y="Amount",
+                        title="Daily Expenses Over Time",
+                        markers=True,                    
+                        line_shape="linear"
+                    )
 
+                    line_fig.update_traces(
+                        line_color="#FFDB58"
+                        )
+                    line_fig.update_layout(
+                        height=380,
+                        xaxis_title="Date",
+                        yaxis_title="Amount (KES)",
+                        plot_bgcolor='rgba(0,0,0,0)'
+                        #marging=dict(t=50, b=40, l=40, r=40)
+                    )
+
+                    #Display the line chart
+                    st.plotly_chart(line_fig, use_container_width=True)
 
 main()
