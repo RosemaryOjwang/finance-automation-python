@@ -42,12 +42,21 @@ git clone https://github.com/RosemaryOjwang/finance-automation-python.git
 ```
 cd finance-automation-python
 ```
-3. Create a virtual environment using the command python -m venv env
-
+3. Create a virtual environment using the command 
+```
+python -m venv env
+```
 4. Activate the virtual environment using:  
 
-  - for windows use env\Scripts\activate
-  - for Linux and MacOS use source env/bin/activate. The same applies for Gitbash.
+    - for windows use
+    ``` 
+    env\Scripts\activate
+    ```
+    - for Linux and MacOS use 
+    ```
+    source env/bin/activate
+    ```
+    The same applies for Gitbash.
 5. Run requirements file to install libraries using the following:
 ```
 pip install -r requirements.txt
