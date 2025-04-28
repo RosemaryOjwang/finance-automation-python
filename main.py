@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import json
 import os
+import plotly.graph_objects as go
 
 #Set page configuration
 st.set_page_config(page_title="Simple Finance App", layout="wide")
@@ -158,28 +159,40 @@ def main():
                 with row1_col2:
                     
                     
-                    #Create pie chart for payments vs expenses
-                    color_map = {
-                        'Total Expenses': '#FFDB58',
-                        'Remaining Balance': '#000080'
-                    }
-                    pie_fig = px.pie(
-                        pie_data,
-                        names="Category",
-                        values="Amount",
-                        title="Total Payments Allocation: Expenses vs. Remaining Balance",
-                        color="Category",
-                        hole=0.5,
-                        color_discrete_map=color_map
-                    )
-                    pie_fig.update_layout(
+                    #Create Gauge Chart for spending vs payments
+                   
+                    gauge_fig = go.Figure(go.Indicator(
+                        mode="gauge+number+delta",
+                        value=total_expenses,
+                        delta={'reference': total_payments, 'increasing': {'color': '#000080'}, 'decreasing': {'color': '#FFDB58'}},
+                        title={'text': "Spending Progress", 'font': {'size': 24}},
+                        gauge={
+                            'axis': {'range': [0, total_payments], 'tickwidth': 1, 'tickcolor': "#000080"},
+                            'bar': {'color': "#FFDB58"},
+                            'bgcolor': "#FFFFFF",
+                            'borderwidth': 2,
+                            'bordercolor': "#000080",
+                            'steps': [
+                                {'range': [0, total_payments*0.5], 'color': '#FFF8DC'},
+                                {'range': [total_payments*0.5, total_payments], 'color': '#F5DEB3'},
+                            ],
+                            'threshold': {
+                                'line': {'color': "#FFDB58", 'width': 4},
+                                'thickness': 0.75,
+                                'value': total_expenses
+                            }
+                        }
+                    ))
+                      
+                    gauge_fig.update_layout(
                         height=380,
-                        margin=dict(t=70, b=40, l=40, r=0)
+                        margin=dict(t=50, b=20, l=20, r=20),
+                        paper_bgcolor="#FFFFFF"
                         )
 
 
-                    #Display pie chart
-                    st.plotly_chart(pie_fig, use_container_width=True)
+                    #Display gauge chart
+                    st.plotly_chart(gauge_fig, use_container_width=True)
                 
                 row2_col1, row2_col2 = st.columns(2)
                 with row2_col1:
